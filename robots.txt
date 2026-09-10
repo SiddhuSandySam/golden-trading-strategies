@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://gts-seo-engine.vercel.app/sitemap.xml
+Sitemap: https://golden-trading-strategies.vercel.app/sitemap.xml

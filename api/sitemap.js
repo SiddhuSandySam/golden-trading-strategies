@@ -1,6 +1,6 @@
 module.exports = async (req, res) => {
   const SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbwrAbet2kGMNHKqoYERq10FRFOhM3p6PP7yW6mn-dJ-3nsJpVvhWnvzBW4ZBfZrzjdp0w/exec";
-  const baseUrl = "https://gts-seo-engine.vercel.app";
+  const baseUrl = "https://golden-trading-strategies.vercel.app";
 
   try {
     const response = await fetch(SCRIPT_API_URL);
