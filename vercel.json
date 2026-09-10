@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/strategy/:key", "destination": "/index.html?key=:key" },
+    { "source": "/:path*", "destination": "/index.html" }
+  ]
+}

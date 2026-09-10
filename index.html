@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Golden Trading Strategies - Master Institutional Trading & SMC</title>
+
+    <!-- Dynamic OpenGraph Meta Tags for WhatsApp/Telegram Sharing -->
+    <meta property="og:title" content="Golden Trading Strategies - Trade Smart, Build A Better You">
+    <meta property="og:description" content="Learn Price Action, Smart Money Concepts (SMC), and Institutional Trading Setups for free.">
+    <meta property="og:image" content="https://github.com/SiddhuSandySam/gts-assets/blob/main/gts%20webpage%20icon%20sandesh%20koli.png?raw=true">
+    <meta property="og:type" content="website">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: '#F0B90B',
+                        slateDark: '#0B0E14',
+                        cardDark: '#161B22',
+                        borderDark: '#21262D'
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #0B0E14; color: #E6EDE3; font-family: system-ui, -apple-system, sans-serif; }
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #FFF099 0%, #F0B90B 50%, #B38600 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gold-border-glow {
+            box-shadow: 0 0 25px rgba(240, 185, 11, 0.15);
+            border: 1px solid rgba(240, 185, 11, 0.3);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- TOP NAVBAR -->
+    <nav class="border-b border-borderDark bg-cardDark/80 backdrop-blur sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
+        <a href="/" class="flex items-center space-x-3">
+            <span class="text-2xl font-bold tracking-wider gold-gradient-text">GOLDEN TRADING STRATEGIES</span>
+        </a>
+        <a href="https://play.google.com/store/apps/details?id=com.technosandy.developer.goldentradingstrategy" target="_blank"
+           class="bg-gold text-slateDark px-5 py-2 rounded-xl font-bold hover:bg-yellow-400 transition flex items-center gap-2">
+            <i class="fab font-bold fa-google-play"></i> Get GTS App
+        </a>
+    </nav>
+
+    <!-- HERO FOUNDER SECTION -->
+    <header class="max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <div class="space-y-6">
+            <div class="inline-block bg-gold/10 text-gold px-4 py-1.5 rounded-full text-sm font-semibold border border-gold/20">
+                🚀 Founded by Sandesh Koli • Trader & Mentor
+            </div>
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight">
+                Master <span class="gold-gradient-text">Institutional Trading</span> & Smart Money Concepts
+            </h1>
+            <p class="text-gray-400 text-lg">
+                Stop guessing. Start executing with institutional setups, order blocks, and real-time market insights.
+            </p>
+            <div class="flex flex-wrap gap-4 pt-2">
+                <a href="https://play.google.com/store/apps/details?id=com.technosandy.developer.goldentradingstrategy" target="_blank"
+                   class="bg-gold text-slateDark px-8 py-4 rounded-2xl font-black text-lg shadow-lg hover:scale-105 transition transform flex items-center gap-3">
+                    <i class="fab fa-google-play text-2xl"></i> Download GTS App Free
+                </a>
+                <a href="https://api.whatsapp.com/send?phone=+918779666670" target="_blank"
+                   class="bg-emerald-600 text-white px-6 py-4 rounded-2xl font-bold text-lg hover:bg-emerald-500 transition flex items-center gap-2">
+                    <i class="fab fa-whatsapp text-2xl"></i> Chat with Founder
+                </a>
+            </div>
+        </div>
+
+        <!-- FOUNDER POSTER IMAGE -->
+        <div class="relative flex justify-center">
+            <div class="absolute -inset-1 bg-gradient-to-r from-gold to-yellow-600 rounded-3xl blur opacity-30"></div>
+            <img src="https://github.com/SiddhuSandySam/gts-assets/blob/main/gts%20webpage%20icon%20sandesh%20koli.png?raw=true"
+                 alt="Sandesh Koli - GTS Founder"
+                 class="relative rounded-3xl shadow-2xl max-h-[550px] object-cover gold-border-glow">
+        </div>
+    </header>
+
+    <!-- DYNAMIC STRATEGY / ARTICLE SECTION -->
+    <main class="max-w-6xl mx-auto px-6 py-8 w-full flex-grow">
+        <div id="content-loader" class="text-center py-12">
+            <i class="fas fa-circle-notch fa-spin text-4xl text-gold"></i>
+            <p class="mt-4 text-gray-400">Loading Strategy Content...</p>
+        </div>
+
+        <!-- Single Strategy View (When URL has ?key=...) -->
+        <article id="strategy-view" class="hidden bg-cardDark rounded-3xl p-8 border border-borderDark space-y-6">
+            <div class="border-b border-borderDark pb-6">
+                <span id="strategy-category" class="text-gold text-sm font-bold tracking-widest uppercase">STRATEGY</span>
+                <h2 id="strategy-title" class="text-3xl md:text-5xl font-extrabold gold-gradient-text mt-2"></h2>
+            </div>
+            <div id="strategy-body" class="text-gray-300 leading-relaxed text-lg space-y-4"></div>
+
+            <div class="pt-8 border-t border-borderDark flex flex-col md:flex-row justify-between items-center gap-4 bg-slateDark/50 p-6 rounded-2xl">
+                <div>
+                    <h4 class="text-xl font-bold gold-gradient-text">Want Live Signals for this Strategy?</h4>
+                    <p class="text-gray-400 text-sm">Get real-time alerts and AI Scanners on the GTS Android App.</p>
+                </div>
+                <a href="https://play.google.com/store/apps/details?id=com.technosandy.developer.goldentradingstrategy" target="_blank"
+                   class="bg-gold text-slateDark px-6 py-3 rounded-xl font-bold hover:scale-105 transition whitespace-nowrap">
+                    Open in GTS App 🚀
+                </a>
+            </div>
+        </article>
+
+        <!-- All Strategies Grid View (Default Landing) -->
+        <section id="strategy-grid-view" class="hidden space-y-8">
+            <h3 class="text-2xl font-bold gold-gradient-text border-b border-borderDark pb-4">
+                🔥 Featured Trading Strategies & Courses
+            </h3>
+            <div id="strategies-list" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-borderDark bg-cardDark py-8 text-center text-gray-500 text-sm mt-12">
+        <p>© 2026 Golden Trading Strategies. Founded by <span class="text-gold font-semibold">Sandesh Koli</span>.</p>
+        <p class="mt-1">Trade Smart • Build A Better You • Learn • Practice • Trade • Grow</p>
+    </footer>
+
+    <!-- DYNAMIC FETCH SCRIPT -->
+    <script>
+        const SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbwrAbet2kGMNHKqoYERq10FRFOhM3p6PP7yW6mn-dJ-3nsJpVvhWnvzBW4ZBfZrzjdp0w/exec";
+
+        async function loadGtsData() {
+            try {
+                const response = await fetch(SCRIPT_API_URL);
+                const data = await response.json();
+
+                document.getElementById('content-loader').classList.add('hidden');
+
+                const urlParams = new URLSearchParams(window.location.search);
+                const selectedKey = urlParams.get('key');
+
+                if (selectedKey && data.articles) {
+                    renderSingleStrategy(selectedKey, data);
+                } else {
+                    renderStrategiesGrid(data);
+                }
+            } catch (error) {
+                console.error("Error loading content:", error);
+                document.getElementById('content-loader').innerHTML = `<p class="text-red-500">Failed to load content. Please refresh or try again.</p>`;
+            }
+        }
+
+        function renderSingleStrategy(key, data) {
+            const article = data.articles.find(a => a.key === key);
+            if (!article) {
+                renderStrategiesGrid(data);
+                return;
+            }
+
+            document.getElementById('strategy-view').classList.remove('hidden');
+            document.getElementById('strategy-title').innerText = article.title;
+            document.getElementById('page-title').innerText = article.title + " - Golden Trading Strategies";
+
+            const bodyContainer = document.getElementById('strategy-body');
+            bodyContainer.innerHTML = article.content.map(line => `<p class="mb-4">${line}</p>`).join('');
+        }
+
+        function renderStrategiesGrid(data) {
+            document.getElementById('strategy-grid-view').classList.remove('hidden');
+            const gridContainer = document.getElementById('strategies-list');
+
+            if (data.articles) {
+                gridContainer.innerHTML = data.articles.map(art => `
+                    <div onclick="window.location.href='?key=${art.key}'"
+                         class="bg-cardDark border border-borderDark p-6 rounded-2xl hover:border-gold/50 cursor-pointer transition transform hover:-translate-y-1 space-y-4">
+                        <span class="text-xs bg-gold/10 text-gold px-3 py-1 rounded-full font-bold uppercase">Strategy</span>
+                        <h4 class="text-xl font-bold text-white hover:text-gold transition">${art.title}</h4>
+                        <p class="text-gray-400 text-sm line-clamp-3">${art.content[0] || 'Learn step-by-step trading rules and institutional setups.'}</p>
+                        <div class="text-gold font-bold text-sm flex items-center gap-2 pt-2">
+                            Read Strategy <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        loadGtsData();
+    </script>
+</body>
+</html>
