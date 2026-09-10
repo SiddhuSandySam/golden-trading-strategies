@@ -1,5 +1,7 @@
 {
   "rewrites": [
+    { "source": "/sitemap.xml", "destination": "/api/sitemap.js" },
+    { "source": "/robots.txt", "destination": "/robots.txt" },
     { "source": "/strategy/:key", "destination": "/index.html?key=:key" },
     { "source": "/:path*", "destination": "/index.html" }
   ]
