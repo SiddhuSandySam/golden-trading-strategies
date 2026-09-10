@@ -100,6 +100,8 @@
                 <span id="strategy-category" class="text-gold text-sm font-bold tracking-widest uppercase">STRATEGY</span>
                 <h2 id="strategy-title" class="text-3xl md:text-5xl font-extrabold gold-gradient-text mt-2"></h2>
             </div>
+
+            <!-- PARSED CONTENT CONTAINER -->
             <div id="strategy-body" class="text-gray-300 leading-relaxed text-lg space-y-4"></div>
 
             <div class="pt-8 border-t border-borderDark flex flex-col md:flex-row justify-between items-center gap-4 bg-slateDark/50 p-6 rounded-2xl">
@@ -129,7 +131,7 @@
         <p class="mt-1">Trade Smart • Build A Better You • Learn • Practice • Trade • Grow</p>
     </footer>
 
-    <!-- DYNAMIC FETCH SCRIPT -->
+    <!-- DYNAMIC FETCH & TAG PARSER SCRIPT -->
     <script>
         const SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbwrAbet2kGMNHKqoYERq10FRFOhM3p6PP7yW6mn-dJ-3nsJpVvhWnvzBW4ZBfZrzjdp0w/exec";
 
@@ -154,6 +156,19 @@
             }
         }
 
+        function cleanSnippetText(text) {
+            if (!text) return 'Learn step-by-step trading rules and institutional setups.';
+            return text.toString()
+                .replace(/<!\[CDATA\[/g, '')
+                .replace(/\]\]>/g, '')
+                .replace(/<item>/g, '')
+                .replace(/<\/item>/g, '')
+                .replace(/[A-Z_]+::/g, '')
+                .replace(/https?:\/\/[^\s]+/g, '')
+                .replace(/options_chain_intro_content/g, '')
+                .trim();
+        }
+
         function renderSingleStrategy(key, data) {
             const article = data.articles.find(a => a.key === key);
             if (!article) {
@@ -166,7 +181,113 @@
             document.getElementById('page-title').innerText = article.title + " - Golden Trading Strategies";
 
             const bodyContainer = document.getElementById('strategy-body');
-            bodyContainer.innerHTML = article.content.map(line => `<p class="mb-4">${line}</p>`).join('');
+            bodyContainer.innerHTML = parseArticleContent(article.content);
+        }
+
+        function parseArticleContent(rawContent) {
+            if (!rawContent || !Array.isArray(rawContent)) return '<p>No content available.</p>';
+
+            let lines = [];
+
+            // Step 1: Pre-clean XML tags, CDATA and split by newlines
+            rawContent.forEach(item => {
+                if (!item) return;
+                let cleanItem = item.toString()
+                    .replace(/<!\[CDATA\[/g, '')
+                    .replace(/\]\]>/g, '')
+                    .replace(/<item>/g, '')
+                    .replace(/<\/item>/g, '')
+                    .replace(/<string-array.*?>/g, '')
+                    .replace(/<\/string-array>/g, '')
+                    .replace(/options_chain_intro_content/g, '')
+                    .trim();
+
+                let subLines = cleanItem.split(/\n|\\n/);
+                subLines.forEach(s => {
+                    let str = s.trim();
+                    if (str) lines.push(str);
+                });
+            });
+
+            let html = '';
+
+            lines.forEach(line => {
+                // Process line for embedded IMAGE:: tags or other tags
+                let chunks = line.split(/(IMAGE::https?:\/\/[^\s>]+)/g);
+
+                chunks.forEach(chunk => {
+                    let part = chunk.trim();
+                    if (!part) return;
+
+                    if (part.startsWith('IMAGE::')) {
+                        let imgUrl = part.replace('IMAGE::', '').trim();
+                        html += `
+                            <div class="my-8 flex justify-center">
+                                <img src="${imgUrl}" alt="Trading Graphic"
+                                     class="rounded-2xl max-w-full gold-border-glow shadow-2xl border border-borderDark object-contain max-h-[550px]"
+                                     loading="lazy"
+                                     onerror="this.style.display='none'" />
+                            </div>`;
+                    } else if (part.includes('::')) {
+                        let tagParts = part.split('::');
+                        let tag = tagParts[0].trim().toUpperCase();
+                        let content = tagParts.slice(1).join('::').trim();
+
+                        // Clean any residual IMAGE:: inside content if concatenated
+                        content = content.replace(/IMAGE::https?:\/\/[^\s]+/g, '');
+
+                        if (tag === 'TITLE') {
+                            html += `<h2 class="text-3xl font-extrabold gold-gradient-text mt-8 mb-4">${content}</h2>`;
+                        } else if (tag === 'SUBTITLE') {
+                            html += `<h3 class="text-2xl font-bold text-gold mt-6 mb-3">${content}</h3>`;
+                        } else if (tag === 'H3') {
+                            html += `<h4 class="text-xl font-bold text-white mt-5 mb-2">${content}</h4>`;
+                        } else if (['NOTE', 'PRO-TIP', 'SECRET', 'FORMULA'].includes(tag)) {
+                            html += `
+                                <div class="my-6 p-5 rounded-2xl bg-gold/10 border-l-4 border-gold text-gold space-y-1 shadow-md">
+                                    <div class="font-bold flex items-center gap-2"><i class="fas fa-lightbulb"></i> ${tag}</div>
+                                    <div class="text-gray-200 text-base">${content}</div>
+                                </div>`;
+                        } else if (['WARNING', 'MISTAKE', 'RULE'].includes(tag)) {
+                            html += `
+                                <div class="my-6 p-5 rounded-2xl bg-red-500/10 border-l-4 border-red-500 text-red-400 space-y-1 shadow-md">
+                                    <div class="font-bold flex items-center gap-2"><i class="fas fa-exclamation-triangle"></i> ${tag}</div>
+                                    <div class="text-gray-200 text-base">${content}</div>
+                                </div>`;
+                        } else if (['CHECK', 'CHECKLIST'].includes(tag)) {
+                            html += `
+                                <div class="my-6 p-5 rounded-2xl bg-emerald-500/10 border-l-4 border-emerald-500 text-emerald-400 space-y-1 shadow-md">
+                                    <div class="font-bold flex items-center gap-2"><i class="fas fa-check-circle"></i> ${tag}</div>
+                                    <div class="text-gray-200 text-base">${content}</div>
+                                </div>`;
+                        } else if (tag === 'FACT') {
+                            html += `
+                                <div class="my-6 p-5 rounded-2xl bg-blue-500/10 border-l-4 border-blue-500 text-blue-400 space-y-1 shadow-md">
+                                    <div class="font-bold flex items-center gap-2"><i class="fas fa-info-circle"></i> ${tag}</div>
+                                    <div class="text-gray-200 text-base">${content}</div>
+                                </div>`;
+                        } else if (tag === 'BUTTON') {
+                            let btnParts = content.split('|');
+                            let label = btnParts[0].trim();
+                            let link = btnParts[1] ? btnParts[1].trim() : '#';
+                            html += `
+                                <div class="my-6 text-center">
+                                    <a href="${link}" target="_blank" class="inline-block bg-gold text-slateDark px-6 py-3 rounded-xl font-bold shadow-lg hover:scale-105 transition">${label}</a>
+                                </div>`;
+                        } else if (tag === 'DIVIDER') {
+                            html += `<hr class="border-borderDark my-8" />`;
+                        } else if (tag === 'TEXT') {
+                            html += `<p class="mb-4 text-gray-300 leading-relaxed text-lg">${content}</p>`;
+                        } else {
+                            html += `<p class="mb-4 text-gray-300 leading-relaxed text-lg">${part}</p>`;
+                        }
+                    } else {
+                        html += `<p class="mb-4 text-gray-300 leading-relaxed text-lg">${part}</p>`;
+                    }
+                });
+            });
+
+            return html;
         }
 
         function renderStrategiesGrid(data) {
@@ -174,17 +295,19 @@
             const gridContainer = document.getElementById('strategies-list');
 
             if (data.articles) {
-                gridContainer.innerHTML = data.articles.map(art => `
-                    <div onclick="window.location.href='?key=${art.key}'"
-                         class="bg-cardDark border border-borderDark p-6 rounded-2xl hover:border-gold/50 cursor-pointer transition transform hover:-translate-y-1 space-y-4">
-                        <span class="text-xs bg-gold/10 text-gold px-3 py-1 rounded-full font-bold uppercase">Strategy</span>
-                        <h4 class="text-xl font-bold text-white hover:text-gold transition">${art.title}</h4>
-                        <p class="text-gray-400 text-sm line-clamp-3">${art.content[0] || 'Learn step-by-step trading rules and institutional setups.'}</p>
-                        <div class="text-gold font-bold text-sm flex items-center gap-2 pt-2">
-                            Read Strategy <i class="fas fa-arrow-right"></i>
-                        </div>
-                    </div>
-                `).join('');
+                gridContainer.innerHTML = data.articles.map(art => {
+                    let cleanSnippet = cleanSnippetText(art.content ? art.content[0] : '');
+                    return `
+                        <div onclick="window.location.href='?key=${art.key}'"
+                             class="bg-cardDark border border-borderDark p-6 rounded-2xl hover:border-gold/50 cursor-pointer transition transform hover:-translate-y-1 space-y-4">
+                            <span class="text-xs bg-gold/10 text-gold px-3 py-1 rounded-full font-bold uppercase">Strategy</span>
+                            <h4 class="text-xl font-bold text-white hover:text-gold transition">${art.title}</h4>
+                            <p class="text-gray-400 text-sm line-clamp-3">${cleanSnippet}</p>
+                            <div class="text-gold font-bold text-sm flex items-center gap-2 pt-2">
+                                Read Strategy <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>`;
+                }).join('');
             }
         }
 
