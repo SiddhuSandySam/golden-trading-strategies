@@ -42,6 +42,11 @@
             box-shadow: 0 0 25px rgba(240, 185, 11, 0.15);
             border: 1px solid rgba(240, 185, 11, 0.3);
         }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0B0E14; }
+        ::-webkit-scrollbar-thumb { background: #21262D; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #F0B90B; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between">
@@ -52,7 +57,7 @@
             <span class="text-2xl font-bold tracking-wider gold-gradient-text">GOLDEN TRADING STRATEGIES</span>
         </a>
         <a href="https://play.google.com/store/apps/details?id=com.technosandy.developer.goldentradingstrategy" target="_blank"
-           class="bg-gold text-slateDark px-5 py-2 rounded-xl font-bold hover:bg-yellow-400 transition flex items-center gap-2">
+           class="bg-gold text-slateDark px-5 py-2 rounded-xl font-bold hover:bg-yellow-400 transition flex items-center gap-2 shadow-lg hover:scale-105">
             <i class="fab font-bold fa-google-play"></i> Get GTS App
         </a>
     </nav>
@@ -98,10 +103,15 @@
         </div>
 
         <!-- Single Strategy View (When URL has ?key=...) -->
-        <article id="strategy-view" class="hidden bg-cardDark rounded-3xl p-8 border border-borderDark space-y-6">
-            <div class="border-b border-borderDark pb-6">
-                <span id="strategy-category" class="text-gold text-sm font-bold tracking-widest uppercase">STRATEGY</span>
-                <h2 id="strategy-title" class="text-3xl md:text-5xl font-extrabold gold-gradient-text mt-2"></h2>
+        <article id="strategy-view" class="hidden bg-cardDark rounded-3xl p-8 border border-borderDark space-y-6 shadow-2xl">
+            <div class="border-b border-borderDark pb-6 flex justify-between items-start flex-wrap gap-4">
+                <div>
+                    <span id="strategy-category" class="text-gold text-xs font-bold tracking-widest uppercase bg-gold/10 px-3 py-1 rounded-full border border-gold/20">STRATEGY</span>
+                    <h2 id="strategy-title" class="text-3xl md:text-5xl font-extrabold gold-gradient-text mt-3"></h2>
+                </div>
+                <a href="/" class="text-gray-400 hover:text-gold transition text-sm flex items-center gap-2 bg-slateDark px-4 py-2 rounded-xl border border-borderDark">
+                    <i class="fas fa-arrow-left"></i> Back to All
+                </a>
             </div>
 
             <!-- PARSED CONTENT CONTAINER -->
@@ -109,11 +119,11 @@
 
             <div class="pt-8 border-t border-borderDark flex flex-col md:flex-row justify-between items-center gap-4 bg-slateDark/50 p-6 rounded-2xl">
                 <div>
-                    <h4 class="text-xl font-bold gold-gradient-text">Want Live Signals for this Strategy?</h4>
-                    <p class="text-gray-400 text-sm">Get real-time alerts and AI Scanners on the GTS Android App.</p>
+                    <h4 class="text-xl font-bold gold-gradient-text">Want Live Signals & Indicators for this Strategy?</h4>
+                    <p class="text-gray-400 text-sm">Get real-time alerts, Option Chain insights, and AI Scanners on the GTS Android App.</p>
                 </div>
                 <a href="https://play.google.com/store/apps/details?id=com.technosandy.developer.goldentradingstrategy" target="_blank"
-                   class="bg-gold text-slateDark px-6 py-3 rounded-xl font-bold hover:scale-105 transition whitespace-nowrap">
+                   class="bg-gold text-slateDark px-6 py-3 rounded-xl font-bold hover:scale-105 transition whitespace-nowrap shadow-lg">
                     Open in GTS App 🚀
                 </a>
             </div>
@@ -121,9 +131,29 @@
 
         <!-- All Strategies Grid View (Default Landing) -->
         <section id="strategy-grid-view" class="hidden space-y-8">
-            <h3 class="text-2xl font-bold gold-gradient-text border-b border-borderDark pb-4">
-                🔥 Featured Trading Strategies & Courses
-            </h3>
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-borderDark pb-4">
+                <h3 class="text-2xl font-bold gold-gradient-text">
+                    🔥 Featured Trading Strategies & Courses
+                </h3>
+                <!-- Search Box -->
+                <div class="relative w-full md:w-72">
+                    <input type="text" id="search-input" placeholder="Search strategy, indicator..."
+                           class="w-full bg-slateDark border border-borderDark rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-gold transition">
+                    <i class="fas fa-search absolute right-3 top-2.5 text-gray-500 text-sm"></i>
+                </div>
+            </div>
+
+            <!-- CATEGORY FILTER CHIPS -->
+            <div id="category-filters" class="flex flex-wrap gap-2 overflow-x-auto pb-2">
+                <button onclick="filterCategory('ALL')" class="cat-btn active bg-gold text-slateDark px-4 py-1.5 rounded-full text-xs font-bold transition">All</button>
+                <button onclick="filterCategory('PRICE ACTION')" class="cat-btn bg-slateDark text-gray-300 border border-borderDark hover:border-gold px-4 py-1.5 rounded-full text-xs font-bold transition">Price Action</button>
+                <button onclick="filterCategory('INDICATORS')" class="cat-btn bg-slateDark text-gray-300 border border-borderDark hover:border-gold px-4 py-1.5 rounded-full text-xs font-bold transition">Indicators</button>
+                <button onclick="filterCategory('OPTION STRATEGIES')" class="cat-btn bg-slateDark text-gray-300 border border-borderDark hover:border-gold px-4 py-1.5 rounded-full text-xs font-bold transition">Option Strategies</button>
+                <button onclick="filterCategory('SMC CONCEPTS')" class="cat-btn bg-slateDark text-gray-300 border border-borderDark hover:border-gold px-4 py-1.5 rounded-full text-xs font-bold transition">SMC Concepts</button>
+                <button onclick="filterCategory('BASICS')" class="cat-btn bg-slateDark text-gray-300 border border-borderDark hover:border-gold px-4 py-1.5 rounded-full text-xs font-bold transition">Basics & Investing</button>
+            </div>
+
+            <!-- EQUAL HEIGHT CARDS GRID -->
             <div id="strategies-list" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
         </section>
     </main>
@@ -137,6 +167,8 @@
     <!-- DYNAMIC FETCH & TAG PARSER SCRIPT -->
     <script>
         const SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbwrAbet2kGMNHKqoYERq10FRFOhM3p6PP7yW6mn-dJ-3nsJpVvhWnvzBW4ZBfZrzjdp0w/exec";
+        let globalAllItems = [];
+        let currentFilter = 'ALL';
 
         async function loadGtsData() {
             try {
@@ -145,18 +177,69 @@
 
                 document.getElementById('content-loader').classList.add('hidden');
 
+                // Merge d.structure and d.articles to include 100% of all content items
+                globalAllItems = combineDataSources(data);
+
                 const urlParams = new URLSearchParams(window.location.search);
                 const selectedKey = urlParams.get('key');
 
-                if (selectedKey && data.articles) {
+                if (selectedKey) {
                     renderSingleStrategy(selectedKey, data);
                 } else {
-                    renderStrategiesGrid(data);
+                    renderStrategiesGrid(globalAllItems);
                 }
+
+                // Setup Search Listener
+                document.getElementById('search-input').addEventListener('input', (e) => {
+                    const query = e.target.value.toLowerCase().trim();
+                    filterAndRender(query);
+                });
+
             } catch (error) {
                 console.error("Error loading content:", error);
                 document.getElementById('content-loader').innerHTML = `<p class="text-red-500">Failed to load content. Please refresh or try again.</p>`;
             }
+        }
+
+        function combineDataSources(data) {
+            let itemMap = new Map();
+
+            // 1. Process Structure (Categories, Indicators, Price Action, Options, etc.)
+            if (data.structure && Array.isArray(data.structure)) {
+                data.structure.forEach(s => {
+                    if (!s.contentKey || s.contentKey === '-' || s.type === 'CATEGORY') return;
+                    itemMap.set(s.contentKey, {
+                        key: s.contentKey,
+                        title: s.title,
+                        image: s.image,
+                        type: s.type || 'STRATEGY',
+                        parentId: s.parentId,
+                        content: null
+                    });
+                });
+            }
+
+            // 2. Process Articles and match or append
+            if (data.articles && Array.isArray(data.articles)) {
+                data.articles.forEach(art => {
+                    if (itemMap.has(art.key)) {
+                        let item = itemMap.get(art.key);
+                        item.content = art.content;
+                        if (!item.title) item.title = art.title;
+                    } else {
+                        itemMap.set(art.key, {
+                            key: art.key,
+                            title: art.title,
+                            image: null,
+                            type: 'ARTICLE',
+                            parentId: '0',
+                            content: art.content
+                        });
+                    }
+                });
+            }
+
+            return Array.from(itemMap.values());
         }
 
         function cleanSnippetText(text) {
@@ -169,22 +252,77 @@
                 .replace(/[A-Z_]+::/g, '')
                 .replace(/https?:\/\/[^\s]+/g, '')
                 .replace(/options_chain_intro_content/g, '')
+                .replace(/[^a-zA-Z0-9\s.,!?-]/g, ' ')
+                .replace(/\s+/g, ' ')
                 .trim();
         }
 
+        function getCategoryGroup(item) {
+            let pid = (item.parentId || '').toString();
+            let type = (item.type || '').toUpperCase();
+            let key = (item.key || '').toLowerCase();
+
+            if (pid === '20' || key.includes('orb') || key.includes('master_candle') || key.includes('trendline')) return 'PRICE ACTION';
+            if (pid === '30' || type === 'STRATEGY' || key.includes('ema') || key.includes('rsi') || key.includes('macd') || key.includes('supertrend')) return 'INDICATORS';
+            if (pid === '11' || pid === '10' || key.includes('opt_') || key.includes('options_chain')) return 'OPTION STRATEGIES';
+            if (pid === '8' || pid === '15' || pid === '2003' || key.includes('smc')) return 'SMC CONCEPTS';
+            if (pid === '1' || pid === '12' || pid === '13' || pid === '14') return 'BASICS';
+            return 'PRICE ACTION';
+        }
+
+        function filterCategory(category) {
+            currentFilter = category;
+
+            // Update UI Button states
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                if (btn.innerText.toUpperCase().includes(category) || (category === 'ALL' && btn.innerText === 'All')) {
+                    btn.className = 'cat-btn active bg-gold text-slateDark px-4 py-1.5 rounded-full text-xs font-bold transition';
+                } else {
+                    btn.className = 'cat-btn bg-slateDark text-gray-300 border border-borderDark hover:border-gold px-4 py-1.5 rounded-full text-xs font-bold transition';
+                }
+            });
+
+            filterAndRender(document.getElementById('search-input').value.toLowerCase().trim());
+        }
+
+        function filterAndRender(query) {
+            let filtered = globalAllItems.filter(item => {
+                let matchesCategory = (currentFilter === 'ALL') || (getCategoryGroup(item) === currentFilter);
+                let matchesQuery = !query || item.title.toLowerCase().includes(query) || item.key.toLowerCase().includes(query);
+                return matchesCategory && matchesQuery;
+            });
+
+            renderStrategiesGrid(filtered);
+        }
+
         function renderSingleStrategy(key, data) {
-            const article = data.articles.find(a => a.key === key);
-            if (!article) {
-                renderStrategiesGrid(data);
-                return;
-            }
+            let item = globalAllItems.find(a => a.key === key);
+            let article = data.articles ? data.articles.find(a => a.key === key) : null;
+
+            let title = item ? item.title : (article ? article.title : key);
+            let rawContent = article ? article.content : (item ? item.content : null);
 
             document.getElementById('strategy-view').classList.remove('hidden');
-            document.getElementById('strategy-title').innerText = article.title;
-            document.getElementById('page-title').innerText = article.title + " - Golden Trading Strategies";
+            document.getElementById('strategy-title').innerText = title;
+            document.getElementById('page-title').innerText = title + " - Golden Trading Strategies";
 
             const bodyContainer = document.getElementById('strategy-body');
-            bodyContainer.innerHTML = parseArticleContent(article.content);
+
+            if (rawContent) {
+                bodyContainer.innerHTML = parseArticleContent(rawContent);
+            } else {
+                bodyContainer.innerHTML = `
+                    <div class="space-y-4 text-center py-8">
+                        <p class="text-xl font-bold gold-gradient-text">${title}</p>
+                        <p class="text-gray-400">Step-by-step rules, chart setups, and live indicators for this strategy are available inside the GTS App.</p>
+                        <div class="pt-4 flex justify-center">
+                            <a href="https://play.google.com/store/apps/details?id=com.technosandy.developer.goldentradingstrategy" target="_blank"
+                               class="bg-gold text-slateDark px-8 py-3 rounded-2xl font-black shadow-lg hover:scale-105 transition">
+                                <i class="fab fa-google-play mr-2"></i> View Full Strategy in GTS App
+                            </a>
+                        </div>
+                    </div>`;
+            }
         }
 
         function parseArticleContent(rawContent) {
@@ -236,7 +374,6 @@
                         let tag = tagParts[0].trim().toUpperCase();
                         let content = tagParts.slice(1).join('::').trim();
 
-                        // Clean any residual IMAGE:: inside content if concatenated
                         content = content.replace(/IMAGE::https?:\/\/[^\s]+/g, '');
 
                         if (tag === 'TITLE') {
@@ -293,25 +430,35 @@
             return html;
         }
 
-        function renderStrategiesGrid(data) {
+        function renderStrategiesGrid(items) {
             document.getElementById('strategy-grid-view').classList.remove('hidden');
             const gridContainer = document.getElementById('strategies-list');
 
-            if (data.articles) {
-                gridContainer.innerHTML = data.articles.map(art => {
-                    let cleanSnippet = cleanSnippetText(art.content ? art.content[0] : '');
-                    return `
-                        <div onclick="window.location.href='?key=${art.key}'"
-                             class="bg-cardDark border border-borderDark p-6 rounded-2xl hover:border-gold/50 cursor-pointer transition transform hover:-translate-y-1 space-y-4">
-                            <span class="text-xs bg-gold/10 text-gold px-3 py-1 rounded-full font-bold uppercase">Strategy</span>
-                            <h4 class="text-xl font-bold text-white hover:text-gold transition">${art.title}</h4>
-                            <p class="text-gray-400 text-sm line-clamp-3">${cleanSnippet}</p>
-                            <div class="text-gold font-bold text-sm flex items-center gap-2 pt-2">
-                                Read Strategy <i class="fas fa-arrow-right"></i>
-                            </div>
-                        </div>`;
-                }).join('');
+            if (!items || items.length === 0) {
+                gridContainer.innerHTML = `<div class="col-span-3 text-center py-8 text-gray-500">No strategies found for this category.</div>`;
+                return;
             }
+
+            gridContainer.innerHTML = items.map(art => {
+                let rawFirstSnippet = art.content && art.content[0] ? art.content[0] : '';
+                let cleanSnippet = cleanSnippetText(rawFirstSnippet);
+                let catLabel = getCategoryGroup(art);
+
+                return `
+                    <div onclick="window.location.href='?key=${art.key}'"
+                         class="bg-cardDark border border-borderDark p-6 rounded-2xl hover:border-gold/50 cursor-pointer transition transform hover:-translate-y-1 flex flex-col justify-between h-[260px] shadow-lg">
+                        <div class="space-y-3 overflow-hidden">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] bg-gold/10 text-gold px-2.5 py-1 rounded-full font-extrabold tracking-wider uppercase border border-gold/20">${catLabel}</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-white hover:text-gold transition line-clamp-1">${art.title}</h4>
+                            <p class="text-gray-400 text-sm line-clamp-3 leading-relaxed">${cleanSnippet}</p>
+                        </div>
+                        <div class="text-gold font-bold text-sm flex items-center gap-2 pt-3 border-t border-borderDark/50">
+                            Read Strategy <i class="fas fa-arrow-right text-xs"></i>
+                        </div>
+                    </div>`;
+            }).join('');
         }
 
         loadGtsData();

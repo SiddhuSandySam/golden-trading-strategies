@@ -6,6 +6,26 @@ module.exports = async (req, res) => {
     const response = await fetch(SCRIPT_API_URL);
     const data = await response.json();
 
+    const urlKeysSet = new Set();
+
+    // 1. Add all keys from structure
+    if (data && data.structure && Array.isArray(data.structure)) {
+      data.structure.forEach(s => {
+        if (s.contentKey && s.contentKey !== '-' && s.type !== 'CATEGORY' && !s.contentKey.startsWith('http')) {
+          urlKeysSet.add(s.contentKey);
+        }
+      });
+    }
+
+    // 2. Add all keys from articles
+    if (data && data.articles && Array.isArray(data.articles)) {
+      data.articles.forEach(art => {
+        if (art.key) {
+          urlKeysSet.add(art.key);
+        }
+      });
+    }
+
     let urlsXml = `
   <url>
     <loc>${baseUrl}/</loc>
@@ -13,18 +33,14 @@ module.exports = async (req, res) => {
     <priority>1.0</priority>
   </url>`;
 
-    if (data && data.articles && Array.isArray(data.articles)) {
-      data.articles.forEach(art => {
-        if (art.key) {
-          urlsXml += `
+    urlKeysSet.forEach(key => {
+      urlsXml += `
   <url>
-    <loc>${baseUrl}/strategy?key=${art.key}</loc>
+    <loc>${baseUrl}/strategy?key=${encodeURIComponent(key)}</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>`;
-        }
-      });
-    }
+    });
 
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
