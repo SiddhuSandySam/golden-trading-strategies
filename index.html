@@ -242,19 +242,52 @@
             return Array.from(itemMap.values());
         }
 
-        function cleanSnippetText(text) {
-            if (!text) return 'Learn step-by-step trading rules and institutional setups.';
-            return text.toString()
-                .replace(/<!\[CDATA\[/g, '')
-                .replace(/\]\]>/g, '')
-                .replace(/<item>/g, '')
-                .replace(/<\/item>/g, '')
-                .replace(/[A-Z_]+::/g, '')
-                .replace(/https?:\/\/[^\s]+/g, '')
-                .replace(/options_chain_intro_content/g, '')
+        function generateDynamicDescription(item) {
+            if (!item) return 'Learn step-by-step trading rules and institutional setups.';
+            let title = item.title || 'Trading Strategy';
+            let cat = getCategoryGroup(item);
+
+            if (cat === 'INDICATORS') {
+                return `Master ${title} with step-by-step indicator rules, entry signals, and risk management.`;
+            } else if (cat === 'OPTION STRATEGIES') {
+                return `Options trading strategy guide for ${title} including risk-reward setup and Greeks.`;
+            } else if (cat === 'SMC CONCEPTS') {
+                return `Institutional Smart Money Concept guide explaining ${title} for precision entries.`;
+            } else if (cat === 'PRICE ACTION') {
+                return `Learn Price Action trading rules, high-probability setups, and chart patterns for ${title}.`;
+            } else if (cat === 'BASICS') {
+                return `Essential trading guide explaining ${title} for beginners and active investors.`;
+            }
+            return `Master ${title} with institutional setups, step-by-step rules, and risk management.`;
+        }
+
+        function cleanSnippetText(text, item) {
+            if (!text || typeof text !== 'string') return generateDynamicDescription(item);
+
+            let rawStr = text.toString()
+                .replace(/<string-array[^>]*>/gi, '')
+                .replace(/<\/string-array>/gi, '')
+                .replace(/<item[^>]*>/gi, '')
+                .replace(/<\/item>/gi, '')
+                .replace(/<!\[CDATA\[/gi, '')
+                .replace(/\]\]>/gi, '');
+
+            rawStr = rawStr
+                .replace(/string[\s-]*array/gi, '')
+                .replace(/name=["']?[a-zA-Z0-9_]+["']?/gi, '')
+                .replace(/content_key_[a-zA-Z0-9_]+/gi, '')
+                .replace(/options_chain_[a-zA-Z0-9_]+/gi, '')
+                .replace(/[A-Z_]+::/gi, '')
+                .replace(/https?:\/\/[^\s]+/gi, '');
+
+            let clean = rawStr
                 .replace(/[^a-zA-Z0-9\s.,!?-]/g, ' ')
+                .replace(/\b(name|content|key)\b/gi, '')
                 .replace(/\s+/g, ' ')
                 .trim();
+
+            if (!clean || clean.length < 15) return generateDynamicDescription(item);
+            return clean;
         }
 
         function getCategoryGroup(item) {
@@ -441,7 +474,7 @@
 
             gridContainer.innerHTML = items.map(art => {
                 let rawFirstSnippet = art.content && art.content[0] ? art.content[0] : '';
-                let cleanSnippet = cleanSnippetText(rawFirstSnippet);
+                let cleanSnippet = cleanSnippetText(rawFirstSnippet, art);
                 let catLabel = getCategoryGroup(art);
 
                 return `
